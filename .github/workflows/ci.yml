@@ -1,33 +1,54 @@
-name: Frontend CI/CD
+name: Fullstack CI with Cypress
 
 on:
   push:
     branches: [main]
 
 jobs:
-  build-test-deploy:
+  fullstack-test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout frontend repository
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
+      - name: Checkout backend repository
+        run: |
+          git clone https://github.com/Fantasyfays/backend-zorgmate.git backend
+
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: Install dependencies
+      - name: Install frontend dependencies
         run: npm install
+
+      - name: Start frontend in background
+        run: |
+          npm run start &
+          npx wait-on http://localhost:3000
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build and start backend
+        working-directory: backend
+        run: |
+          ./mvnw clean package -DskipTests
+          java -jar target/*.jar &
+          npx wait-on http://localhost:8080
 
       - name: Run Cypress tests
         run: npx cypress run
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/zorgmate-frontend:latest .
 
-      - name: Build React app
-        run: npm run build
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
-      - name: Docker build and push
-        run: |
-          docker build -t fays21/zorgmate-frontend:latest .
-          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u fays21 --password-stdin
-          docker push fays21/zorgmate-frontend:latest
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/zorgmate-frontend:latest
