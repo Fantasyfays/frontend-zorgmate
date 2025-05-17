@@ -6,15 +6,12 @@ on:
       - main
       - master
     paths:
-      - 'zorgmate-frontend/**'
-      - '.github/workflows/frontend.yml'
+      - '**'
+      - '.github/workflows/ci.yml'
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: zorgmate-frontend
 
     steps:
       - name: Checkout repository
@@ -29,7 +26,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./zorgmate-frontend
+          context: .
           push: true
           tags: fays21/zorgmate-frontend:latest
           build-args: |
