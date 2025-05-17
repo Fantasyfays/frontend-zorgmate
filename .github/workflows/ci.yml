@@ -1,82 +1,40 @@
-name: Fullstack CI with Cypress
+name: Frontend CI/CD
 
 on:
   push:
     branches: [main]
 
 jobs:
-  fullstack-test:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:14
-        ports:
-          - 5432:5432
-        env:
-          POSTGRES_USER: zorg
-          POSTGRES_PASSWORD: 123
-          POSTGRES_DB: zorgmate
-        options: >-
-          --health-cmd="pg_isready -U zorg"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
     steps:
-      - name: Checkout frontend repository
+      - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Checkout backend repository
-        env:
-          TOKEN: ${{ secrets.GH_PAT }}
-        run: |
-          git clone https://$TOKEN@github.com/Fantasyfays/ZorgMate.git backend
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: Install frontend dependencies
+      - name: Install dependencies
         run: npm install
 
       - name: Build frontend
         run: npm run build
 
-      - name: Serve frontend in background
-        run: |
-          npx serve -s build -l 3000 &
-          npx wait-on http://localhost:3000
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Set up Java
-        uses: actions/setup-java@v3
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
         with:
-          java-version: '17'
-          distribution: 'temurin'
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and start backend
-        working-directory: backend
-        env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/zorgmate
-          SPRING_DATASOURCE_USERNAME: zorg
-          SPRING_DATASOURCE_PASSWORD: 123
-          SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
-          SPRING_JPA_HIBERNATE_DDL_AUTO: update
-          SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
-        run: |
-          ./mvnw clean package -DskipTests
-          java -jar target/*.jar &
-          npx wait-on http://localhost:8080
-
-      - name: Run Cypress tests
-        run: npx cypress run
-
-      - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/zorgmate-frontend:latest .
-
-      - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-
-      - name: Push Docker image
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/zorgmate-frontend:latest
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/zorgmate-frontend:latest
