@@ -1,14 +1,21 @@
-# Stap 1: build fase
-FROM node:18 AS build
+# Dockerfile
+
+# Build stage
+FROM node:18-alpine AS build
 WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+ARG REACT_APP_API_BASE_URL
+ENV REACT_APP_API_BASE_URL=$REACT_APP_API_BASE_URL
+RUN npm run build
 
-# Kopieer alles, incl. .env (zorg dat .dockerignore het NIET uitsluit)
-COPY .env.production .env
-
-RUN npm install && npm run build
-
-# Stap 2: server image met Nginx
+# Serve with Nginx
 FROM nginx:alpine
 COPY --from=build /app/build /usr/share/nginx/html
+
+# Optional: Custom Nginx config for React routing
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

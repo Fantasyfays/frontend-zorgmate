@@ -1,7 +1,4 @@
 node_modules
 build
-npm-debug.log
-Dockerfile
-.dockerignore
-# Verwijder of comment deze uit:
-#.env
+.git
+.gitignore

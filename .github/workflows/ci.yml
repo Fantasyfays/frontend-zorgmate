@@ -1,40 +1,36 @@
-name: Frontend CI/CD
+name: Build and Push React Frontend
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - master
+    paths:
+      - 'zorgmate-frontend/**'
+      - '.github/workflows/frontend.yml'
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: zorgmate-frontend
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build frontend
-        run: npm run build
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./zorgmate-frontend
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/zorgmate-frontend:latest
+          tags: fays21/zorgmate-frontend:latest
+          build-args: |
+            REACT_APP_API_BASE_URL=/api
