@@ -26,9 +26,12 @@ jobs:
       - name: Install frontend dependencies
         run: npm install
 
-      - name: Start frontend in background
+      - name: Build frontend
+        run: npm run build
+
+      - name: Serve frontend in background
         run: |
-          npm run start &
+          npx serve -s build -l 3000 &
           npx wait-on http://localhost:3000
 
       - name: Set up Java

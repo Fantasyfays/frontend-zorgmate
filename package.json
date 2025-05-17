@@ -41,6 +41,7 @@
     ]
   },
   "devDependencies": {
-    "cypress": "^14.3.3"
+    "cypress": "^14.3.3",
+    "serve": "^14.2.4"
   }
 }
