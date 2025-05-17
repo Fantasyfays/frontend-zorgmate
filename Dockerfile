@@ -1,6 +1,10 @@
-FROM node:18 AS build
+FROM node:18 as build
 WORKDIR /app
+
+# Kopieer de projectbestanden inclusief .env
 COPY . .
+COPY .env .env
+
 RUN npm install && npm run build
 
 FROM nginx:alpine
