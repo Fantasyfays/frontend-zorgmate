@@ -7,7 +7,7 @@ on:
       - master
     paths:
       - '**'
-      - '.github/workflows/ci.yml'
+      - '.github/workflows/frontend.yml'
 
 jobs:
   build:
@@ -23,11 +23,18 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push Docker image
+      - name: Set up QEMU (for multi-platform builds)
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and push multi-platform Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./frontend-zorgmate
           push: true
           tags: fays21/zorgmate-frontend:latest
+          platforms: linux/amd64,linux/arm64
           build-args: |
             REACT_APP_API_BASE_URL=/api
