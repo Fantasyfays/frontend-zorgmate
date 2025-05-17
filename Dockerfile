@@ -1,25 +1,27 @@
 # Build stage
-FROM node:18-alpine AS build
+FROM node:18 AS build
+
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json package-lock.json ./
 RUN npm install
 
 COPY . .
-
-ARG REACT_APP_API_BASE_URL
-ENV REACT_APP_API_BASE_URL=$REACT_APP_API_BASE_URL
-
 RUN npm run build
 
 # Production stage
-FROM node:18-alpine
+FROM node:18
+
+# Install 'serve' globally
+RUN npm install -g serve
+
 WORKDIR /app
 
-RUN npm install -g http-server
-
+# Copy the build folder from the previous stage
 COPY --from=build /app/build ./build
 
+# Expose the port that serve uses
 EXPOSE 3000
 
-CMD ["http-server", "build", "-p", "3000", "-a", "0.0.0.0"]
+# Run the app using 'serve'
+CMD ["serve", "-s", "build", "-l", "3000"]
