@@ -13,9 +13,14 @@ FROM node:18-slim
 RUN npm install -g serve
 
 WORKDIR /app
+
+# Kopieer de build output
 COPY --from=build /app/build ./build
+
+# 🔧 Kopieer je config.json handmatig naar de juiste plek
+COPY public/config.json ./build/config.json
 
 EXPOSE 3000
 
-# ✅ Correcte CMD-regel voor serve
+# Start de app via "serve"
 CMD ["serve", "-s", "build", "-l", "3000"]
