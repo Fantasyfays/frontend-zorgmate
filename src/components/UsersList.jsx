@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import UserService from '../services/UserService';
-import { Container, Card, Row, Col, Badge, Button } from 'react-bootstrap';
+import { Container, Card, Row, Col, Badge } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 const UsersList = () => {
