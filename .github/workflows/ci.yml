@@ -6,24 +6,18 @@ on:
       - main
       - master
     paths:
-      - 'zorgmate-frontend/**'
+      - 'frontend-zorgmate/**'
       - '.github/workflows/ci.yml'
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: zorgmate-frontend
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Check frontend folder contents
-        run: ls -la
-
-      - name: Log in to Docker Hub
+      - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -32,7 +26,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./frontend-zorgmate
           push: true
           tags: fays21/zorgmate-frontend:latest
           build-args: |
