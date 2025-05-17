@@ -1,6 +1,7 @@
 import axios from 'axios';
+import API_BASE_URL from './api';
 
-const API_URL = `${process.env.REACT_APP_API_URL}/users`;
+const API_URL = `${API_BASE_URL}/users`;
 
 const getAll = () => axios.get(API_URL);
 const getById = (id) => axios.get(`${API_URL}/${id}`);

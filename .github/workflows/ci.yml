@@ -26,7 +26,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./zorgmate-frontend
           push: true
           tags: fays21/zorgmate-frontend:latest
           build-args: |

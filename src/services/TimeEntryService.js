@@ -1,6 +1,7 @@
 import axios from 'axios';
+import API_BASE_URL from './api';
 
-const API = `${process.env.REACT_APP_API_URL}/time-entries`;
+const API = `${API_BASE_URL}/time-entries`;
 
 const TimeEntryService = {
     create: (data) => axios.post(API, data),
