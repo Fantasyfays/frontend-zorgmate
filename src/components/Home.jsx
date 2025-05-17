@@ -8,7 +8,7 @@ const Home = () => {
                 <Col md={8}>
                     <h1 className="display-4 text-primary fw-bold">Welkom bij ZorgMate!</h1>
                     <p className="lead my-4">
-                        Beheer gebruikers eenvoudig, efficiënt en veilig met ZorgMate.
+                        Beheer honden eenvoudig, efficiënt en veilig met ZorgMate.
                         Een moderne oplossing voor al je gebruikersbeheer.
                     </p>
                     <Button href="/users" className="btn-custom btn-lg">Bekijk Gebruikers</Button>
