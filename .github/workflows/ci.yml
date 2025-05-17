@@ -7,7 +7,7 @@ on:
       - master
     paths:
       - '**'
-      - '.github/workflows/ci.yml'
+      - '.github/workflows/frontend-ci.yml'
 
 jobs:
   build:
@@ -16,6 +16,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
@@ -27,6 +32,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
+          file: ./Dockerfile          # Zorg dat deze pad klopt met je Dockerfile locatie
           push: true
           tags: fays21/zorgmate-frontend:latest
           build-args: |

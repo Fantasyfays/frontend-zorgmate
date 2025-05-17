@@ -16,7 +16,6 @@ RUN npm run build
 FROM node:18-alpine
 WORKDIR /app
 
-# Installeer http-server globally
 RUN npm install -g http-server
 
 COPY --from=build /app/build ./build
