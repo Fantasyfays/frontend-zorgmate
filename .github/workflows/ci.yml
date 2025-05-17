@@ -16,7 +16,7 @@ jobs:
         env:
           TOKEN: ${{ secrets.GH_PAT }}
         run: |
-          git clone https://$TOKEN@github.com/Fantasyfays/backend-zorgmate.git backend
+          git clone https://$TOKEN@github.com/Fantasyfays/ZorgMate.git backend
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
