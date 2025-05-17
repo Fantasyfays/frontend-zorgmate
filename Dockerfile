@@ -3,7 +3,7 @@ FROM node:18 AS build
 WORKDIR /app
 
 # Kopieer alles, incl. .env (zorg dat .dockerignore het NIET uitsluit)
-COPY . .
+COPY .env.production .env
 
 RUN npm install && npm run build
 
