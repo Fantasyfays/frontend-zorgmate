@@ -1,15 +1,12 @@
-import axios from 'axios';
-import API_BASE_URL from '../api';
-
-const API_URL = `${API_BASE_URL}/invoices`;
+import api from '../api';
 
 const InvoiceService = {
-    getAll: () => axios.get(API_URL),
-    getById: (id) => axios.get(`${API_URL}/${id}`),
-    update: (id, data) => axios.put(`${API_URL}/${id}`, data),
-    updateStatus: (id, status) => axios.patch(`${API_URL}/${id}/status/${status}`),
-    delete: (id) => axios.delete(`${API_URL}/${id}`),
-    autoGenerate: (dto) => axios.post(`${API_URL}/auto-generate`, dto)
+    getAll: () => api.get('/invoices'),
+    getById: (id) => api.get(`/invoices/${id}`),
+    update: (id, data) => api.put(`/invoices/${id}`, data),
+    updateStatus: (id, status) => api.patch(`/invoices/${id}/status/${status}`),
+    delete: (id) => api.delete(`/invoices/${id}`),
+    autoGenerate: (dto) => api.post(`/invoices/auto-generate`, dto),
 };
 
 export default InvoiceService;

@@ -11,6 +11,9 @@ import ClientList from './components/ClientList';
 import ClientForm from "./components/ClientForm";
 import TimeEntryForm from "./components/TimeEntryForm";
 import InvoiceDetails from "./components/InvoiceDetails";
+import ProtectedRoute from './components/ProtectedRoute';
+import LoginPage from './components/LoginPage'; // voeg deze toe als je dat nog niet had
+
 
 function App() {
     return (
@@ -18,17 +21,20 @@ function App() {
             <NavigationBar />
             <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<UserRegistration />} />
-                <Route path="/users" element={<UsersList />} />
-                <Route path="/invoices" element={<InvoicesList />} />
-                <Route path="/users/edit/:id" element={<UserEditForm />} />
-                <Route path="/invoice/auto" element={<AutoInvoiceForm />} />
-                <Route path="/invoice/edit/:id" element={<InvoiceEditForm />} />
-                <Route path="/clients" element={<ClientList />} />
-                <Route path="/clients/new" element={<ClientForm />} />
-                <Route path="/time-entry" element={<TimeEntryForm />} />
-                <Route path="/invoice/details/:id" element={<InvoiceDetails />} />
+
+                <Route path="/users" element={<ProtectedRoute><UsersList /></ProtectedRoute>} />
+                <Route path="/invoices" element={<ProtectedRoute><InvoicesList /></ProtectedRoute>} />
+                <Route path="/users/edit/:id" element={<ProtectedRoute><UserEditForm /></ProtectedRoute>} />
+                <Route path="/invoice/auto" element={<ProtectedRoute><AutoInvoiceForm /></ProtectedRoute>} />
+                <Route path="/invoice/edit/:id" element={<ProtectedRoute><InvoiceEditForm /></ProtectedRoute>} />
+                <Route path="/clients" element={<ProtectedRoute><ClientList /></ProtectedRoute>} />
+                <Route path="/clients/new" element={<ProtectedRoute><ClientForm /></ProtectedRoute>} />
+                <Route path="/time-entry" element={<ProtectedRoute><TimeEntryForm /></ProtectedRoute>} />
+                <Route path="/invoice/details/:id" element={<ProtectedRoute><InvoiceDetails /></ProtectedRoute>} />
             </Routes>
+
         </Router>
     );
 }

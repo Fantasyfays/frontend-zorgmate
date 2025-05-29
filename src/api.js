@@ -1,11 +1,16 @@
-let API_BASE_URL = '';
+import axios from 'axios';
 
-if (window.REACT_APP_API_URL) {
-    API_BASE_URL = window.REACT_APP_API_URL;
-} else if (window.location.hostname === 'localhost') {
-    API_BASE_URL = 'http://localhost:8081/api';
-} else {
-    API_BASE_URL = '/api';
-}
+const api = axios.create({
+    baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8080/api',
+});
 
-export default API_BASE_URL;
+// Voeg token toe aan elke request als hij bestaat
+api.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token'); // of waar je 'm opslaat
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
+
+export default api;

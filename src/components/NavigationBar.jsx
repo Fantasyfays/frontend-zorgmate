@@ -25,6 +25,10 @@ const NavigationBar = () => {
                         <Nav.Link href="/clients" onClick={handleNavigate('/clients')}>Klanten</Nav.Link>
                         <Nav.Link href="/clients/new" onClick={handleNavigate('/clients/new')}>Nieuwe Klant</Nav.Link>
                         <Nav.Link href="/time-entry" onClick={handleNavigate('/time-entry')}>Uren registreren</Nav.Link>
+                        <Nav.Link onClick={() => {
+                            localStorage.removeItem('token');
+                            navigate('/login');
+                        }}>Uitloggen</Nav.Link>
 
                     </Nav>
                 </Navbar.Collapse>
