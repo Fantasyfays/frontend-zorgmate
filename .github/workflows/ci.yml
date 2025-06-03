@@ -42,6 +42,8 @@ jobs:
           file: ./Dockerfile
           push: true
           no-cache: 'true'
-          tags: fays21/zorgmate-frontend:latest
+          tags: |
+            fays21/zorgmate-frontend:latest
+            fays21/zorgmate-frontend:${{ github.run_number }}
           build-args: |
             REACT_APP_API_BASE_URL=/api
