@@ -27,7 +27,7 @@ const NavigationBar = () => {
                         <Nav.Link href="/time-entry" onClick={handleNavigate('/time-entry')}>Uren registreren</Nav.Link>
                         <Nav.Link onClick={() => {
                             localStorage.removeItem('token');
-                            navigate('/login');
+                            window.location.href = '/login';
                         }}>Uitloggen</Nav.Link>
 
                     </Nav>

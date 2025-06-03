@@ -2,12 +2,29 @@ import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Button, Badge, Spinner, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import InvoiceService from '../services/InvoiceService';
+import { jwtDecode } from "jwt-decode";
 
 const InvoicesList = () => {
     const [invoices, setInvoices] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const navigate = useNavigate();
+
+    // ✅ Veilige logging van token info
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (typeof token === 'string' && token.trim() !== '') {
+            try {
+                const decoded = jwtDecode(token);
+                console.log("✅ Ingelogde gebruiker via token:", decoded.sub);
+            } catch (err) {
+                console.error("❌ Ongeldig token:", err.message);
+            }
+        } else {
+            console.warn("⚠️ Ongeldig of ontbrekend token:", token);
+        }
+    }, []);
+
 
     useEffect(() => {
         loadInvoices();
@@ -29,9 +46,22 @@ const InvoicesList = () => {
 
     const deleteInvoice = (id) => {
         if (window.confirm("Weet je zeker dat je deze factuur wilt verwijderen?")) {
+            console.log("Verstuur DELETE voor factuur ID:", id);
+
             InvoiceService.delete(id)
-                .then(loadInvoices)
-                .catch(() => setError('Verwijderen mislukt.'));
+                .then(() => {
+                    console.log("Factuur succesvol verwijderd.");
+                    loadInvoices();
+                })
+                .catch((err) => {
+                    if (err.response?.status === 403) {
+                        console.error("Je hebt geen rechten om deze factuur te verwijderen.");
+                        setError("Je hebt geen rechten om deze factuur te verwijderen.");
+                    } else {
+                        console.error("Fout bij verwijderen:", err.response?.data || err.message);
+                        setError("Verwijderen mislukt.");
+                    }
+                });
         }
     };
 
@@ -91,7 +121,6 @@ const InvoicesList = () => {
                                     </Button>
                                 </div>
                             </Card.Footer>
-
                         </Card>
                     </Col>
                 ))}

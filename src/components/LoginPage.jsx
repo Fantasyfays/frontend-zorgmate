@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import { Form, Button, Alert, Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +8,10 @@ const LoginPage = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+
+    useEffect(() => {
+        localStorage.removeItem('token'); // Wis oude tokens bij laden van loginpagina
+    }, []);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -20,7 +24,8 @@ const LoginPage = () => {
             });
 
             const token = response.data.token;
-            localStorage.setItem('token', token); // JWT opslaan
+            localStorage.removeItem('token'); // Verwijder eerst oude token
+            localStorage.setItem('token', token);
             navigate('/invoices'); // Pas aan naar jouw route
 
         } catch (err) {
