@@ -14,9 +14,7 @@ fetch('/config.json')
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(
-            <React.StrictMode>
-                <App />
-            </React.StrictMode>
+            <App /> // ✅ Geen StrictMode om WebSocket herverbindingsprobleem te vermijden
         );
 
         reportWebVitals();

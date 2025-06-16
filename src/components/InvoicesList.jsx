@@ -25,6 +25,39 @@ const InvoicesList = () => {
         }
     }, []);
 
+    // ✅ WebSocket verbinding met token
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            console.warn("⚠️ Geen JWT gevonden in localStorage.");
+            return;
+        }
+
+        const socket = new WebSocket(`ws://localhost:8080/ws/invoices?token=${token}`);
+
+        socket.onopen = () => {
+            console.log("🔌 WebSocket verbonden");
+        };
+
+        socket.onmessage = (event) => {
+            console.log("📨 WebSocket bericht ontvangen:", event.data);
+            if (event.data.startsWith("factuur_")) {
+                loadInvoices();
+            }
+        };
+
+        socket.onerror = (error) => {
+            console.error("❌ WebSocket fout:", error);
+        };
+
+        socket.onclose = () => {
+            console.log("❌ WebSocket verbinding gesloten");
+        };
+
+        return () => {
+            socket.close();
+        };
+    }, []);
 
     useEffect(() => {
         loadInvoices();
