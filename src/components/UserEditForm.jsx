@@ -84,7 +84,12 @@ const UserEditForm = () => {
                         <option value="BEDRIJF">BEDRIJF</option>
                     </Form.Select>
                 </Form.Group>
-                <Button type="submit" className="btn-custom">Opslaan</Button>
+                <div className="d-flex gap-3">
+                    <Button type="submit" className="btn-custom">Opslaan</Button>
+                    <Button variant="secondary" onClick={() => navigate('/users')}>
+                        Annuleren
+                    </Button>
+                </div>
             </Form>
         </Container>
     );

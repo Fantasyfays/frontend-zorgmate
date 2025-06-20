@@ -106,6 +106,8 @@ const InvoiceEditForm = () => {
     };
 
     const changeStatus = (newStatus) => {
+        if (invoice.status === newStatus) return; // ✅ voorkom onnodige update
+
         InvoiceService.updateStatus(id, newStatus)
             .then(() => {
                 setInvoice({ ...invoice, status: newStatus });
@@ -156,6 +158,7 @@ const InvoiceEditForm = () => {
                                     {['UNPAID', 'PAID', 'OVERDUE'].map(status => (
                                         <Button
                                             key={status}
+                                            data-testid={`status-${status.toLowerCase()}`} // ✅ nodig voor Cypress
                                             variant={invoice.status === status ? 'primary' : 'outline-secondary'}
                                             onClick={() => changeStatus(status)}
                                             type="button"
