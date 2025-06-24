@@ -10,48 +10,46 @@ const InvoicesList = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    // ✅ Veilige logging van token info
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (typeof token === 'string' && token.trim() !== '') {
             try {
                 const decoded = jwtDecode(token);
-                console.log("✅ Ingelogde gebruiker via token:", decoded.sub);
+                console.log("Ingelogde gebruiker via token:", decoded.sub);
             } catch (err) {
-                console.error("❌ Ongeldig token:", err.message);
+                console.error("Ongeldig token:", err.message);
             }
         } else {
-            console.warn("⚠️ Ongeldig of ontbrekend token:", token);
+            console.warn("Ongeldig of ontbrekend token:", token);
         }
     }, []);
 
-    // ✅ WebSocket verbinding met token
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (!token) {
-            console.warn("⚠️ Geen JWT gevonden in localStorage.");
+            console.warn("Geen JWT gevonden in localStorage.");
             return;
         }
 
         const socket = new WebSocket(`ws://localhost:8080/ws/invoices?token=${token}`);
 
         socket.onopen = () => {
-            console.log("🔌 WebSocket verbonden");
+            console.log("WebSocket verbonden");
         };
 
         socket.onmessage = (event) => {
-            console.log("📨 WebSocket bericht ontvangen:", event.data);
+            console.log("WebSocket bericht ontvangen:", event.data);
             if (event.data.startsWith("factuur_")) {
                 loadInvoices();
             }
         };
 
         socket.onerror = (error) => {
-            console.error("❌ WebSocket fout:", error);
+            console.error("WebSocket fout:", error);
         };
 
         socket.onclose = () => {
-            console.log("❌ WebSocket verbinding gesloten");
+            console.log("WebSocket verbinding gesloten");
         };
 
         return () => {

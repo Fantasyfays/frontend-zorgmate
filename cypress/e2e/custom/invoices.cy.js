@@ -1,5 +1,3 @@
-/// <reference types="cypress" />
-
 describe('📌 Invoices CRUD – Alternatieve flows (zonder foutcodes)', () => {
     beforeEach(() => {
         cy.window().then(win => win.localStorage.setItem('token', 'fake-jwt'));

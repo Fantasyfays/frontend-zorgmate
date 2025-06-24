@@ -14,23 +14,39 @@ const ClientList = () => {
                 setLoading(false);
             })
             .catch(() => {
-                setError('Fout bij laden van klanten');
+                setError('❌ Fout bij laden van klanten');
                 setLoading(false);
             });
     }, []);
 
-    if (loading) return <Container className="text-center"><Spinner /></Container>;
-    if (error) return <Alert variant="danger">{error}</Alert>;
+    if (loading) {
+        return (
+            <Container className="text-center mt-5">
+                <Spinner animation="border" />
+            </Container>
+        );
+    }
+
+    if (error) {
+        return (
+            <Container className="mt-5">
+                <Alert variant="danger">{error}</Alert>
+            </Container>
+        );
+    }
 
     return (
         <Container className="my-4">
             <h2>Klanten</h2>
-            <Table striped bordered hover>
+            <Table striped bordered hover responsive>
                 <thead>
                 <tr>
                     <th>Naam</th>
                     <th>Email</th>
                     <th>Telefoon</th>
+                    <th>Straat</th>
+                    <th>Postcode + Huisnummer</th>
+                    <th>Woonplaats</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -39,6 +55,9 @@ const ClientList = () => {
                         <td>{client.name}</td>
                         <td>{client.email}</td>
                         <td>{client.phone}</td>
+                        <td>{client.street}</td>
+                        <td>{client.postcode} {client.houseNumber}</td>
+                        <td>{client.city}</td>
                     </tr>
                 ))}
                 </tbody>

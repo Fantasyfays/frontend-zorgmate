@@ -1,5 +1,3 @@
-/// <reference types="cypress" />
-
 describe('📌 Users CRUD – Alternatieve flows (zonder foutcodes)', () => {
     beforeEach(() => {
         cy.window().then(win => win.localStorage.setItem('token', 'fake-jwt'));
@@ -35,13 +33,10 @@ describe('📌 Users CRUD – Alternatieve flows (zonder foutcodes)', () => {
         cy.visit('/users/edit/1');
         cy.wait('@getUser');
 
-        // Simuleer een wijziging
         cy.get('select').select('ADMIN');
 
-        // Klik op annuleren
         cy.contains('Annuleren').click();
 
-        // We moeten terug op de overzichtspagina zijn
         cy.url().should('include', '/users');
     });
 });

@@ -12,7 +12,7 @@ const InvoiceDetails = () => {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        InvoiceService.getById(id) // ✅ correct
+        InvoiceService.getById(id)
             .then(res => {
                 setInvoice(res.data);
                 setLoading(false);
