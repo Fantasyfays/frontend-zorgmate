@@ -13,7 +13,8 @@ const ClientForm = () => {
         street: '',
         city: ''
     });
-    const [message, setMessage] = useState('');
+    const [success, setSuccess] = useState('');
+    const [error, setError] = useState('');
     const [validated, setValidated] = useState(false);
 
     const handleChange = (e) => {
@@ -31,9 +32,9 @@ const ClientForm = () => {
                         street: result.street,
                         city: result.city
                     }));
-                    setMessage('');
+                    setError('');
                 } catch (err) {
-                    setMessage('Adres niet gevonden.');
+                    setError('Adres niet gevonden.');
                     setClient(prev => ({
                         ...prev,
                         street: '',
@@ -44,7 +45,6 @@ const ClientForm = () => {
         };
         fetchAddress();
     }, [client.postcode, client.houseNumber]);
-
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -57,7 +57,8 @@ const ClientForm = () => {
 
         ClientService.create(client)
             .then(() => {
-                setMessage('Klant succesvol aangemaakt!');
+                setSuccess('Klant succesvol aangemaakt!');
+                setError('');
                 setClient({
                     name: '',
                     email: '',
@@ -69,15 +70,29 @@ const ClientForm = () => {
                 });
                 setValidated(false);
             })
-            .catch(() => setMessage('Fout bij aanmaken klant.'));
+            .catch(() => {
+                setError('Fout bij aanmaken klant.');
+                setSuccess('');
+            });
     };
 
     return (
         <Container className="my-5">
             <Card className="shadow p-4">
                 <h2>Nieuwe Klant</h2>
-                {message && <Alert variant="info">{message}</Alert>}
-                <Form noValidate validated={validated} onSubmit={handleSubmit}>
+
+                {success && (
+                    <Alert variant="success" data-testid="client-success">
+                        {success}
+                    </Alert>
+                )}
+                {error && (
+                    <Alert variant="danger" data-testid="client-error">
+                        {error}
+                    </Alert>
+                )}
+
+                <Form noValidate validated={validated} onSubmit={handleSubmit} data-testid="client-form">
                     <Form.Group className="mb-3">
                         <Form.Label>Naam</Form.Label>
                         <Form.Control
@@ -85,6 +100,7 @@ const ClientForm = () => {
                             value={client.name}
                             onChange={handleChange}
                             required
+                            data-testid="client-name"
                         />
                         <Form.Control.Feedback type="invalid">
                             Naam is verplicht.
@@ -99,6 +115,7 @@ const ClientForm = () => {
                             value={client.email}
                             onChange={handleChange}
                             required
+                            data-testid="client-email"
                         />
                         <Form.Control.Feedback type="invalid">
                             Voer een geldig e-mailadres in.
@@ -113,6 +130,7 @@ const ClientForm = () => {
                             onChange={handleChange}
                             pattern="^(\+31|0)6[0-9]{8}$"
                             required
+                            data-testid="client-phone"
                         />
                         <Form.Control.Feedback type="invalid">
                             Voer een geldig mobiel nummer in.
@@ -127,6 +145,7 @@ const ClientForm = () => {
                             onChange={handleChange}
                             pattern="^[1-9][0-9]{3}[A-Z]{2}$"
                             required
+                            data-testid="client-postcode"
                         />
                         <Form.Control.Feedback type="invalid">
                             Voer een geldige postcode in (bijv. 1234AB).
@@ -140,6 +159,7 @@ const ClientForm = () => {
                             value={client.houseNumber}
                             onChange={handleChange}
                             required
+                            data-testid="client-houseNumber"
                         />
                         <Form.Control.Feedback type="invalid">
                             Huisnummer is verplicht.
@@ -153,6 +173,7 @@ const ClientForm = () => {
                             value={client.street}
                             readOnly
                             required
+                            data-testid="client-street"
                         />
                         <Form.Control.Feedback type="invalid">
                             Straat is verplicht.
@@ -166,13 +187,14 @@ const ClientForm = () => {
                             value={client.city}
                             readOnly
                             required
+                            data-testid="client-city"
                         />
                         <Form.Control.Feedback type="invalid">
                             Woonplaats is verplicht.
                         </Form.Control.Feedback>
                     </Form.Group>
 
-                    <Button type="submit">Opslaan</Button>
+                    <Button type="submit" data-testid="client-submit">Opslaan</Button>
                 </Form>
             </Card>
         </Container>

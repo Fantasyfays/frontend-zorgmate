@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Form, Button, Alert, Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -36,8 +36,8 @@ const LoginPage = () => {
     return (
         <Container className="mt-5" style={{ maxWidth: '400px' }}>
             <h2 className="text-center text-primary mb-4">Inloggen</h2>
-            {error && <Alert variant="danger">{error}</Alert>}
-            <Form onSubmit={handleLogin}>
+            {error && <Alert variant="danger" data-testid="login-error">{error}</Alert>}
+            <Form onSubmit={handleLogin} data-testid="login-form">
                 <Form.Group className="mb-3">
                     <Form.Label>Gebruikersnaam</Form.Label>
                     <Form.Control
@@ -45,6 +45,7 @@ const LoginPage = () => {
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         required
+                        data-testid="login-username"
                     />
                 </Form.Group>
                 <Form.Group className="mb-3">
@@ -54,6 +55,7 @@ const LoginPage = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
+                        data-testid="login-password"
                     />
                 </Form.Group>
                 <Button type="submit" className="btn-custom w-100">Login</Button>

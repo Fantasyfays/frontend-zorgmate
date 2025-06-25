@@ -27,7 +27,11 @@ const UserRegistration = () => {
             if (err.response?.data) {
                 const errorData = err.response.data;
                 const msg = Object.entries(errorData)
-                    .map(([field, message]) => `${field}: ${message}`)
+                    .map(([field, message]) => {
+                        if (field === 'username') return 'Gebruikersnaam is verplicht';
+                        if (field === 'password') return 'Wachtwoord is verplicht';
+                        return message;
+                    })
                     .join('\n');
                 setError(msg);
             } else {
@@ -39,9 +43,13 @@ const UserRegistration = () => {
     return (
         <Container className="mt-5">
             <h2 className="text-primary">Registratie</h2>
-            {error && <Alert variant="danger" className="white-space-pre-line">{error}</Alert>}
+            {error && (
+                <Alert variant="danger" className="white-space-pre-line" data-testid="register-error">
+                    {error}
+                </Alert>
+            )}
             {success && <Alert variant="success">{success}</Alert>}
-            <Form onSubmit={registerUser}>
+            <Form onSubmit={registerUser} data-testid="register-form">
                 <Form.Group className="mb-3">
                     <Form.Label>Gebruikersnaam</Form.Label>
                     <Form.Control
@@ -49,6 +57,7 @@ const UserRegistration = () => {
                         value={username || ''}
                         onChange={(e) => setUsername(e.target.value)}
                         required
+                        data-testid="username"
                     />
                 </Form.Group>
                 <Form.Group className="mb-3">
@@ -59,6 +68,7 @@ const UserRegistration = () => {
                         value={password || ''}
                         onChange={(e) => setPassword(e.target.value)}
                         required
+                        data-testid="password"
                     />
                 </Form.Group>
                 <Form.Group className="mb-3">
@@ -67,6 +77,7 @@ const UserRegistration = () => {
                         name="role"
                         value={role}
                         onChange={(e) => setRole(e.target.value)}
+                        data-testid="role"
                     >
                         <option value="USER">USER</option>
                         <option value="ADMIN">ADMIN</option>

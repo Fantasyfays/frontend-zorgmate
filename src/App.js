@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import NavigationBar from './components/NavigationBar';
 import Home from './components/Home';
 import InvoiceEditForm from './components/InvoiceEditForm';
@@ -8,15 +9,27 @@ import InvoicesList from './components/InvoicesList';
 import UserEditForm from './components/UserEditForm';
 import AutoInvoiceForm from './components/AutoInvoiceForm';
 import ClientList from './components/ClientList';
-import ClientForm from "./components/ClientForm";
-import TimeEntryForm from "./components/TimeEntryForm";
-import InvoiceDetails from "./components/InvoiceDetails";
+import ClientForm from './components/ClientForm';
+import TimeEntryForm from './components/TimeEntryForm';
+import InvoiceDetails from './components/InvoiceDetails';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './components/LoginPage';
 
 function App() {
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        const isPublic = location.pathname === '/login' || location.pathname === '/register';
+
+        if (!token && !isPublic) {
+            navigate('/login', { replace: true });
+        }
+    }, [location, navigate]);
+
     return (
-        <Router>
+        <>
             <NavigationBar />
             <Routes>
                 <Route path="/login" element={<LoginPage />} />
@@ -33,7 +46,7 @@ function App() {
                 <Route path="/time-entry" element={<ProtectedRoute><TimeEntryForm /></ProtectedRoute>} />
                 <Route path="/invoice/details/:id" element={<ProtectedRoute><InvoiceDetails /></ProtectedRoute>} />
             </Routes>
-        </Router>
+        </>
     );
 }
 

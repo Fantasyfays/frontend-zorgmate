@@ -5,16 +5,19 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './custom.css';
+import { BrowserRouter } from 'react-router-dom';
 
-// Laad config.json eerst en render dan pas de app
+const root = ReactDOM.createRoot(document.getElementById('root'));
+
 fetch('/config.json')
     .then((res) => res.json())
     .then((config) => {
         window.REACT_APP_API_URL = config.REACT_APP_API_URL;
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(
-            <App /> // ✅ Geen StrictMode om WebSocket herverbindingsprobleem te vermijden
+            <BrowserRouter>
+                <App />
+            </BrowserRouter>
         );
 
         reportWebVitals();

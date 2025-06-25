@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Card, Form, Button, Alert, Spinner } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import InvoiceService from '../services/InvoiceService';
 import ClientService from '../services/ClientService';
 
@@ -10,6 +11,8 @@ const AutoInvoiceForm = () => {
     const [success, setSuccess] = useState(false);
     const [loadingClients, setLoadingClients] = useState(true);
     const [validated, setValidated] = useState(false);
+
+    const navigate = useNavigate(); // 👈 Voeg navigate toe
 
     useEffect(() => {
         ClientService.getAll()
@@ -40,6 +43,11 @@ const AutoInvoiceForm = () => {
                 setSuccess(true);
                 setValidated(false);
                 setSelectedClientId('');
+
+                // ➤ Redirect na korte delay (optioneel: laat succesmelding kort zien)
+                setTimeout(() => {
+                    navigate('/invoices');
+                }, 1500);
             })
             .catch(err => {
                 console.error(err);
@@ -54,17 +62,27 @@ const AutoInvoiceForm = () => {
                 <h2>Factuur Automatisch Genereren</h2>
 
                 {message && (
-                    <Alert variant={success ? 'success' : 'danger'} className="mt-3">
+                    <Alert
+                        variant={success ? 'success' : 'danger'}
+                        className="mt-3"
+                        data-testid="auto-message"
+                    >
                         {message}
                     </Alert>
                 )}
 
                 {loadingClients ? (
-                    <div className="text-center my-4">
+                    <div className="text-center my-4" data-testid="auto-loading">
                         <Spinner animation="border" />
                     </div>
                 ) : (
-                    <Form noValidate validated={validated} onSubmit={handleSubmit} className="mt-4">
+                    <Form
+                        noValidate
+                        validated={validated}
+                        onSubmit={handleSubmit}
+                        className="mt-4"
+                        data-testid="auto-form"
+                    >
                         <Form.Group>
                             <Form.Label>Selecteer Klant</Form.Label>
                             <Form.Select
@@ -73,6 +91,7 @@ const AutoInvoiceForm = () => {
                                 onChange={(e) => setSelectedClientId(e.target.value)}
                                 required
                                 isInvalid={!selectedClientId}
+                                data-testid="auto-client-select"
                             >
                                 <option value="">-- Kies een klant --</option>
                                 {clients.map((client) => (
@@ -86,7 +105,11 @@ const AutoInvoiceForm = () => {
                             </Form.Control.Feedback>
                         </Form.Group>
 
-                        <Button type="submit" className="mt-3">
+                        <Button
+                            type="submit"
+                            className="mt-3"
+                            data-testid="auto-submit"
+                        >
                             Genereer Factuur
                         </Button>
                     </Form>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Button, Badge, Spinner, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import InvoiceService from '../services/InvoiceService';
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from 'jwt-decode';
 
 const InvoicesList = () => {
     const [invoices, setInvoices] = useState([]);
@@ -11,45 +11,45 @@ const InvoicesList = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem('token');
         if (typeof token === 'string' && token.trim() !== '') {
             try {
                 const decoded = jwtDecode(token);
-                console.log("Ingelogde gebruiker via token:", decoded.sub);
+                console.log('Ingelogde gebruiker via token:', decoded.sub);
             } catch (err) {
-                console.error("Ongeldig token:", err.message);
+                console.error('Ongeldig token:', err.message);
             }
         } else {
-            console.warn("Ongeldig of ontbrekend token:", token);
+            console.warn('Ongeldig of ontbrekend token:', token);
         }
     }, []);
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem('token');
         if (!token) {
-            console.warn("Geen JWT gevonden in localStorage.");
+            console.warn('Geen JWT gevonden in localStorage.');
             return;
         }
 
         const socket = new WebSocket(`ws://localhost:8080/ws/invoices?token=${token}`);
 
         socket.onopen = () => {
-            console.log("WebSocket verbonden");
+            console.log('WebSocket verbonden');
         };
 
         socket.onmessage = (event) => {
-            console.log("WebSocket bericht ontvangen:", event.data);
-            if (event.data.startsWith("factuur_")) {
+            console.log('WebSocket bericht ontvangen:', event.data);
+            if (event.data.startsWith('factuur_')) {
                 loadInvoices();
             }
         };
 
         socket.onerror = (error) => {
-            console.error("WebSocket fout:", error);
+            console.error('WebSocket fout:', error);
         };
 
         socket.onclose = () => {
-            console.log("WebSocket verbinding gesloten");
+            console.log('WebSocket verbinding gesloten');
         };
 
         return () => {
@@ -64,11 +64,11 @@ const InvoicesList = () => {
     const loadInvoices = () => {
         setLoading(true);
         InvoiceService.getAll()
-            .then(res => {
+            .then((res) => {
                 setInvoices(res.data);
                 setLoading(false);
             })
-            .catch(err => {
+            .catch((err) => {
                 console.error(err);
                 setError('Fout bij laden van facturen.');
                 setLoading(false);
@@ -76,21 +76,17 @@ const InvoicesList = () => {
     };
 
     const deleteInvoice = (id) => {
-        if (window.confirm("Weet je zeker dat je deze factuur wilt verwijderen?")) {
-            console.log("Verstuur DELETE voor factuur ID:", id);
-
+        if (window.confirm('Weet je zeker dat je deze factuur wilt verwijderen?')) {
             InvoiceService.delete(id)
                 .then(() => {
-                    console.log("Factuur succesvol verwijderd.");
+                    console.log('Factuur succesvol verwijderd.');
                     loadInvoices();
                 })
                 .catch((err) => {
                     if (err.response?.status === 403) {
-                        console.error("Je hebt geen rechten om deze factuur te verwijderen.");
-                        setError("Je hebt geen rechten om deze factuur te verwijderen.");
+                        setError('Je hebt geen rechten om deze factuur te verwijderen.');
                     } else {
-                        console.error("Fout bij verwijderen:", err.response?.data || err.message);
-                        setError("Verwijderen mislukt.");
+                        setError('Verwijderen mislukt.');
                     }
                 });
         }
@@ -115,47 +111,72 @@ const InvoicesList = () => {
 
             {error && <Alert variant="danger">{error}</Alert>}
 
-            <Row xs={1} md={2} lg={3} className="g-4">
-                {invoices.map((inv) => (
-                    <Col key={inv.id}>
-                        <Card className="h-100 shadow-sm">
-                            <Card.Body>
-                                <Card.Title className="d-flex justify-content-between align-items-center">
-                                    <span>{inv.invoiceNumber}</span>
-                                    <Badge bg={
-                                        inv.status === 'PAID' ? 'success' :
-                                            inv.status === 'OVERDUE' ? 'danger' :
-                                                'warning'
-                                    }>
-                                        {inv.status}
-                                    </Badge>
-                                </Card.Title>
-                                <Card.Subtitle className="mb-2 text-muted">
-                                    {inv.senderName} → {inv.receiverName}
-                                </Card.Subtitle>
-                                <Card.Text>
-                                    <strong>Bedrag:</strong> €{inv.totalAmount.toFixed(2)}<br />
-                                    <strong>Uitgiftedatum:</strong> {inv.issueDate}<br />
-                                    <strong>Vervaldatum:</strong> {inv.dueDate}
-                                </Card.Text>
-                            </Card.Body>
-                            <Card.Footer className="d-flex justify-content-between">
-                                <Button size="sm" variant="outline-info" onClick={() => navigate(`/invoice/details/${inv.id}`)}>
-                                    Bekijken
-                                </Button>
-                                <div className="d-flex gap-2">
-                                    <Button size="sm" variant="outline-primary" onClick={() => navigate(`/invoice/edit/${inv.id}`)}>
-                                        Bewerken
+            {invoices.length === 0 ? (
+                <div data-testid="empty-invoices" className="text-center text-muted">
+                    Geen facturen gevonden
+                </div>
+            ) : (
+                <Row xs={1} md={2} lg={3} className="g-4">
+                    {invoices.map((inv) => (
+                        <Col key={inv.id}>
+                            <Card className="h-100 shadow-sm">
+                                <Card.Body>
+                                    <Card.Title className="d-flex justify-content-between align-items-center">
+                                        <span>{inv.invoiceNumber}</span>
+                                        <Badge
+                                            bg={
+                                                inv.status === 'PAID'
+                                                    ? 'success'
+                                                    : inv.status === 'OVERDUE'
+                                                        ? 'danger'
+                                                        : 'warning'
+                                            }
+                                        >
+                                            {inv.status}
+                                        </Badge>
+                                    </Card.Title>
+                                    <Card.Subtitle className="mb-2 text-muted">
+                                        {inv.senderName} → {inv.receiverName}
+                                    </Card.Subtitle>
+                                    <Card.Text>
+                                        <strong>Bedrag:</strong> €{inv.totalAmount.toFixed(2)}
+                                        <br />
+                                        <strong>Uitgiftedatum:</strong> {inv.issueDate}
+                                        <br />
+                                        <strong>Vervaldatum:</strong> {inv.dueDate}
+                                    </Card.Text>
+                                </Card.Body>
+                                <Card.Footer className="d-flex justify-content-between">
+                                    <Button
+                                        size="sm"
+                                        variant="outline-info"
+                                        onClick={() => navigate(`/invoice/details/${inv.id}`)}
+                                    >
+                                        Bekijken
                                     </Button>
-                                    <Button size="sm" variant="outline-danger" onClick={() => deleteInvoice(inv.id)}>
-                                        Verwijderen
-                                    </Button>
-                                </div>
-                            </Card.Footer>
-                        </Card>
-                    </Col>
-                ))}
-            </Row>
+                                    <div className="d-flex gap-2">
+                                        <Button
+                                            size="sm"
+                                            variant="outline-primary"
+                                            onClick={() => navigate(`/invoice/edit/${inv.id}`)}
+                                        >
+                                            Bewerken
+                                        </Button>
+                                        <Button
+                                            size="sm"
+                                            variant="outline-danger"
+                                            onClick={() => deleteInvoice(inv.id)}
+                                            data-testid="invoice-delete-button"
+                                        >
+                                            Verwijderen
+                                        </Button>
+                                    </div>
+                                </Card.Footer>
+                            </Card>
+                        </Col>
+                    ))}
+                </Row>
+            )}
         </Container>
     );
 };

@@ -73,13 +73,13 @@ const TimeEntryForm = () => {
             <Card className="shadow p-4">
                 <h2>Uren registreren</h2>
 
-                {error && <Alert variant="danger">{error}</Alert>}
-                {message && <Alert variant="success">{message}</Alert>}
+                {error && <Alert variant="danger" data-testid="entry-error">{error}</Alert>}
+                {message && <Alert variant="success" data-testid="entry-success">{message}</Alert>}
 
                 {loadingClients ? (
                     <div className="text-center"><Spinner animation="border" /></div>
                 ) : (
-                    <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                    <Form noValidate validated={validated} onSubmit={handleSubmit} data-testid="entry-form">
                         <Form.Group className="mb-3">
                             <Form.Label>Klant</Form.Label>
                             <Form.Select
@@ -87,11 +87,12 @@ const TimeEntryForm = () => {
                                 value={entry.clientId}
                                 onChange={handleChange}
                                 required
+                                data-testid="entry-clientId"
                             >
                                 <option value="">Selecteer een klant</option>
                                 {clients.map(client => (
                                     <option key={client.id} value={client.id}>
-                                        {client.name}
+                                        {client.name} ({client.email})
                                     </option>
                                 ))}
                             </Form.Select>
@@ -107,6 +108,7 @@ const TimeEntryForm = () => {
                                 value={entry.description}
                                 onChange={handleChange}
                                 required
+                                data-testid="entry-description"
                             />
                             <Form.Control.Feedback type="invalid">
                                 Omschrijving is verplicht.
@@ -121,6 +123,7 @@ const TimeEntryForm = () => {
                                 value={entry.date}
                                 onChange={handleChange}
                                 required
+                                data-testid="entry-date"
                             />
                             <Form.Control.Feedback type="invalid">
                                 Datum is verplicht.
@@ -136,6 +139,7 @@ const TimeEntryForm = () => {
                                 value={entry.hours}
                                 onChange={handleChange}
                                 required
+                                data-testid="entry-hours"
                             />
                             <Form.Control.Feedback type="invalid">
                                 Voer een geldig aantal uren in (minimaal 1).
@@ -151,13 +155,14 @@ const TimeEntryForm = () => {
                                 value={entry.hourlyRate}
                                 onChange={handleChange}
                                 required
+                                data-testid="entry-hourlyRate"
                             />
                             <Form.Control.Feedback type="invalid">
                                 Voer een geldig tarief in.
                             </Form.Control.Feedback>
                         </Form.Group>
 
-                        <Button type="submit">Opslaan</Button>
+                        <Button type="submit" data-testid="entry-submit">Opslaan</Button>
                     </Form>
                 )}
             </Card>
