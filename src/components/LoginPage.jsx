@@ -10,7 +10,7 @@ const LoginPage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        localStorage.removeItem('token'); // Wis oude tokens bij laden van loginpagina
+        localStorage.removeItem('token');
     }, []);
 
     const handleLogin = async (e) => {
@@ -24,9 +24,9 @@ const LoginPage = () => {
             });
 
             const token = response.data.token;
-            localStorage.removeItem('token'); // Verwijder eerst oude token
+            localStorage.removeItem('token');
             localStorage.setItem('token', token);
-            navigate('/invoices'); // Pas aan naar jouw route
+            navigate('/invoices');
 
         } catch (err) {
             setError(err.response?.data?.error || 'Fout bij inloggen');

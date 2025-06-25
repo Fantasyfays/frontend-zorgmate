@@ -19,11 +19,9 @@ function App() {
         <Router>
             <NavigationBar />
             <Routes>
-                {/* Alleen inloggen en registreren publiekelijk */}
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<UserRegistration />} />
 
-                {/* ALLE andere routes vereisen login */}
                 <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
                 <Route path="/users" element={<ProtectedRoute><UsersList /></ProtectedRoute>} />
                 <Route path="/invoices" element={<ProtectedRoute><InvoicesList /></ProtectedRoute>} />

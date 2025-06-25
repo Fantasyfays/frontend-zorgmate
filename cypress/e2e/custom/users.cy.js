@@ -1,4 +1,4 @@
-describe('📌 Users CRUD – Alternatieve flows (zonder foutcodes)', () => {
+describe('Users CRUD – Alternatieve flows (zonder foutcodes)', () => {
     beforeEach(() => {
         cy.window().then(win => win.localStorage.setItem('token', 'fake-jwt'));
     });

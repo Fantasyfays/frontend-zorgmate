@@ -14,7 +14,7 @@ const ClientList = () => {
                 setLoading(false);
             })
             .catch(() => {
-                setError('❌ Fout bij laden van klanten');
+                setError('Fout bij laden van klanten');
                 setLoading(false);
             });
     }, []);

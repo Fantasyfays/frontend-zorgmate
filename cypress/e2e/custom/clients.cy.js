@@ -1,4 +1,4 @@
-describe('📌 Clients CRUD', () => {
+describe('Clients CRUD', () => {
     beforeEach(() => {
         cy.window().then(win => win.localStorage.setItem('token', 'fake-jwt'));
     });
@@ -45,7 +45,7 @@ describe('📌 Clients CRUD', () => {
         cy.get('form').submit();
 
         cy.wait('@createClient').its('response.statusCode').should('eq', 201);
-        cy.contains('✅ Klant succesvol aangemaakt!').should('exist');
+        cy.contains('Klant succesvol aangemaakt!').should('exist');
     });
 
     it('Toont foutmelding bij mislukte submit', () => {
@@ -77,7 +77,7 @@ describe('📌 Clients CRUD', () => {
         cy.get('form').submit();
 
         cy.wait('@createClientFail').its('response.statusCode').should('eq', 500);
-        cy.contains('❌ Fout bij aanmaken klant.').should('exist');
+        cy.contains('Fout bij aanmaken klant.').should('exist');
     });
 
     it('Toont foutmelding als adres niet gevonden wordt', () => {
@@ -94,7 +94,7 @@ describe('📌 Clients CRUD', () => {
         cy.wait('@addressNotFound').its('response.statusCode').should('eq', 404);
         cy.get('input[name="street"]').should('have.value', '');
         cy.get('input[name="city"]').should('have.value', '');
-        cy.contains('⚠️ Adres niet gevonden').should('exist');
+        cy.contains('Adres niet gevonden').should('exist');
     });
 
     it('Toont validatiefout bij ongeldig e-mailadres', () => {

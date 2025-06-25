@@ -33,7 +33,7 @@ const ClientForm = () => {
                     }));
                     setMessage('');
                 } catch (err) {
-                    setMessage('⚠️ Adres niet gevonden (alleen testadressen werken in sandbox).');
+                    setMessage('Adres niet gevonden.');
                     setClient(prev => ({
                         ...prev,
                         street: '',
@@ -57,7 +57,7 @@ const ClientForm = () => {
 
         ClientService.create(client)
             .then(() => {
-                setMessage('✅ Klant succesvol aangemaakt!');
+                setMessage('Klant succesvol aangemaakt!');
                 setClient({
                     name: '',
                     email: '',
@@ -69,7 +69,7 @@ const ClientForm = () => {
                 });
                 setValidated(false);
             })
-            .catch(() => setMessage('❌ Fout bij aanmaken klant.'));
+            .catch(() => setMessage('Fout bij aanmaken klant.'));
     };
 
     return (
