@@ -22,11 +22,10 @@ const ClientForm = () => {
 
     useEffect(() => {
         const fetchAddress = async () => {
-            const { postcode, houseNumber } = client;
             const postcodeRegex = /^[1-9][0-9]{3}[A-Z]{2}$/;
-            if (postcodeRegex.test(postcode) && houseNumber) {
+            if (postcodeRegex.test(client.postcode) && client.houseNumber) {
                 try {
-                    const result = await lookupAddress(postcode, houseNumber);
+                    const result = await lookupAddress(client.postcode, client.houseNumber);
                     setClient(prev => ({
                         ...prev,
                         street: result.street,
@@ -45,6 +44,7 @@ const ClientForm = () => {
         };
         fetchAddress();
     }, [client.postcode, client.houseNumber]);
+
 
     const handleSubmit = (e) => {
         e.preventDefault();

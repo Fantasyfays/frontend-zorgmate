@@ -38,13 +38,13 @@ describe('📌 Clients CRUD', () => {
         cy.get('input[name="postcode"]').type('6545CA');
         cy.get('input[name="houseNumber"]').type('29');
 
-        cy.wait('@lookupAddress');
+        cy.wait('@lookupAddress').its('response.statusCode').should('eq', 200);
         cy.get('input[name="street"]').should('have.value', 'Waldeck Pyrmontsingel');
         cy.get('input[name="city"]').should('have.value', 'Nijmegen');
 
         cy.get('form').submit();
 
-        cy.wait('@createClient');
+        cy.wait('@createClient').its('response.statusCode').should('eq', 201);
         cy.contains('✅ Klant succesvol aangemaakt!').should('exist');
     });
 
@@ -70,13 +70,13 @@ describe('📌 Clients CRUD', () => {
         cy.get('input[name="postcode"]').type('6545CA');
         cy.get('input[name="houseNumber"]').type('29');
 
-        cy.wait('@lookupFailAddress');
+        cy.wait('@lookupFailAddress').its('response.statusCode').should('eq', 200);
         cy.get('input[name="street"]').should('have.value', 'Waldeck Pyrmontsingel');
         cy.get('input[name="city"]').should('have.value', 'Nijmegen');
 
         cy.get('form').submit();
 
-        cy.wait('@createClientFail');
+        cy.wait('@createClientFail').its('response.statusCode').should('eq', 500);
         cy.contains('❌ Fout bij aanmaken klant.').should('exist');
     });
 
@@ -91,7 +91,7 @@ describe('📌 Clients CRUD', () => {
         cy.get('input[name="postcode"]').type('9999ZZ');
         cy.get('input[name="houseNumber"]').type('99');
 
-        cy.wait('@addressNotFound');
+        cy.wait('@addressNotFound').its('response.statusCode').should('eq', 404);
         cy.get('input[name="street"]').should('have.value', '');
         cy.get('input[name="city"]').should('have.value', '');
         cy.contains('⚠️ Adres niet gevonden').should('exist');
@@ -114,7 +114,7 @@ describe('📌 Clients CRUD', () => {
         cy.get('input[name="postcode"]').type('6545CA');
         cy.get('input[name="houseNumber"]').type('29');
 
-        cy.wait('@lookupAddress');
+        cy.wait('@lookupAddress').its('response.statusCode').should('eq', 200);
 
         cy.get('form').submit();
 
@@ -138,7 +138,7 @@ describe('📌 Clients CRUD', () => {
         cy.get('input[name="postcode"]').type('6545CA');
         cy.get('input[name="houseNumber"]').type('29');
 
-        cy.wait('@lookupAddress');
+        cy.wait('@lookupAddress').its('response.statusCode').should('eq', 200);
 
         cy.get('form').submit();
 
