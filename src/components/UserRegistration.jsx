@@ -83,6 +83,7 @@ const UserRegistration = () => {
                         <option value="ADMIN">ADMIN</option>
                         <option value="MEDEWERKER">MEDEWERKER</option>
                         <option value="BEDRIJF">BEDRIJF</option>
+                        <option value="CLIENT">CLIENT</option>
                     </Form.Select>
                 </Form.Group>
                 <Button className="btn-custom" type="submit">Registreer</Button>
